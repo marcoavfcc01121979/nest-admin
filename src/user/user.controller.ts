@@ -1,5 +1,5 @@
 import { UserCreateDto } from './model/user-create.dto';
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { User } from './model/user.entity';
 import { UserService } from './user.service';
 
@@ -7,6 +7,8 @@ import * as bcrypt from 'bcryptjs'
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserUpdateDto } from './model/user-update.dto';
 import { UpdateDateColumn } from 'typeorm';
+import { AuthService } from 'src/auth/auth.service';
+import { Request } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(AuthGuard)
@@ -14,7 +16,8 @@ import { UpdateDateColumn } from 'typeorm';
 export class UserController {
 
     constructor(
-        private userService: UserService
+        private userService: UserService,
+        private authService: AuthService
     ) {}
 
     @Get()
@@ -39,6 +42,38 @@ export class UserController {
     async get(@Param('id') id: number) {
         // console.log("id ", id);
         return this.userService.findOne({id}, ['role']);
+    }
+
+    @Put('info')
+    async updateInfo(
+        @Req() request: Request,
+        @Body() body: UserUpdateDto,
+    ) {
+        const id =  await this.authService.userId(request)
+        await this.userService.update(id, body);
+
+        return this.userService.findOne({ id });
+    }
+
+    @Put('password')
+    async updatePassword(
+        @Req() request: Request,
+        @Body('password') password: string,
+        @Body('password_confirm') password_confirm: string,
+    ) {
+        if(password !== password_confirm) {
+            throw new BadRequestException('Passwords do not match!');
+        }
+
+        const id =  await this.authService.userId(request)
+
+        const hashed = await bcrypt.hash(password, 12)
+
+        await this.userService.update(id, {
+            password: hashed
+        });
+
+        return this.userService.findOne({ id });
     }
 
     @Put()
