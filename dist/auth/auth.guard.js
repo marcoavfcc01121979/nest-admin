@@ -13,14 +13,14 @@ exports.AuthGuard = void 0;
 const jwt_1 = require("@nestjs/jwt");
 const common_1 = require("@nestjs/common");
 let AuthGuard = class AuthGuard {
-    constructor(JwtService) {
-        this.JwtService = JwtService;
+    constructor(jwtService) {
+        this.jwtService = jwtService;
     }
     canActivate(context) {
         const request = context.switchToHttp().getRequest();
         try {
             const jwt = request.cookies['jwt'];
-            return this.JwtService.verify(jwt);
+            return this.jwtService.verify(jwt);
         }
         catch (error) {
             return false;

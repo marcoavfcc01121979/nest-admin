@@ -4,8 +4,9 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private JwtService: JwtService
+    private jwtService: JwtService
   ) {}
+
   canActivate(
     context: ExecutionContext,
   ) {
@@ -14,7 +15,7 @@ export class AuthGuard implements CanActivate {
     try {
       const jwt = request.cookies['jwt'];
 
-      return this.JwtService.verify(jwt);
+      return this.jwtService.verify(jwt);
     } catch (error) {
       return false
     }
