@@ -40,7 +40,7 @@ export class OrderController {
             o.order_items.forEach((i: OrderItem) => {
                 json.push({
                     ID: '',
-                    Name: '',
+                    Name: '',  
                     Email: '',
                     'Product Title': i.product_title,
                     Price: i.price,
@@ -53,5 +53,10 @@ export class OrderController {
         res.header('Content-Type', 'text/csv');
         res.attachment('orders.csv');
         return res.send(csv);
+    }
+
+    @Get('chart')
+    async chart() {
+        return this.orderService.chart();
     }
 }

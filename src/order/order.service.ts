@@ -19,7 +19,7 @@ export class OrderService extends AbstractService {
         return {
             data: data.map((order: Order) => ({
                 id: order.id,
-                name: order.name,
+                name: order.name, 
                 email: order.email,
                 total: order.total,
                 created_at: order.created_at,
@@ -27,5 +27,14 @@ export class OrderService extends AbstractService {
             })),
             meta
         }
+    }
+
+    async chart() {
+        return this.orderRepository.query(`
+            SELECT DATE_FORMAT(o.created_at, '%Y-%m-%d') as date, sum(i.price * i.quantity) as sum
+            FROM orders o
+            JOIN order_items i on o.id = i.order_id
+            GROUP BY date;
+        `);
     }
 }
