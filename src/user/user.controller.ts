@@ -9,9 +9,11 @@ import { UserUpdateDto } from './model/user-update.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { Request } from 'express';
 import { HasPermission } from 'src/permission/has-permission.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(AuthGuard)
+@ApiTags('users')
 @Controller('users')
 export class UserController {
 

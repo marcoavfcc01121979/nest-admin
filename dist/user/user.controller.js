@@ -32,6 +32,7 @@ const auth_guard_1 = require("../auth/auth.guard");
 const user_update_dto_1 = require("./model/user-update.dto");
 const auth_service_1 = require("../auth/auth.service");
 const has_permission_decorator_1 = require("../permission/has-permission.decorator");
+const swagger_1 = require("@nestjs/swagger");
 let UserController = class UserController {
     constructor(userService, authService) {
         this.userService = userService;
@@ -136,6 +137,7 @@ __decorate([
 UserController = __decorate([
     (0, common_1.UseInterceptors)(common_1.ClassSerializerInterceptor),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiTags)('users'),
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
         auth_service_1.AuthService])
